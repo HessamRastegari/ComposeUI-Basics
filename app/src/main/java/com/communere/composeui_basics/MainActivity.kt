@@ -4,8 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColor
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -62,17 +65,28 @@ class MainActivity : ComponentActivity() {
 fun ProfileScreen() {
     var isFollowing by remember { mutableStateOf(false) }
 
+    val cardElevation by animateDpAsState(
+        targetValue = if (isFollowing) 16.dp else 8.dp,
+        label = "cardElevation"
+    )
+
+    val cardPadding by animateDpAsState(
+        targetValue = if (isFollowing) 32.dp else 24.dp,
+        label = "cardPadding"
+    )
+
     Card(
         modifier = Modifier
             .padding(24.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .animateContentSize(), // smooth resizing
         shape = MaterialTheme.shapes.large,
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = cardElevation)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(24.dp),
+                .padding(cardPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
@@ -87,7 +101,7 @@ fun ProfileScreen() {
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Hessam Rastegari",
+                text = "John Doe",
                 style = MaterialTheme.typography.titleLarge
             )
 
@@ -97,15 +111,16 @@ fun ProfileScreen() {
                 color = MaterialTheme.colorScheme.primary
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Text(
-                text = "\"Crafting modern mobile experiences.\"",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 16.dp),
-                lineHeight = 20.sp
-            )
+            // Animate description fade/visibility
+            AnimatedVisibility(visible = !isFollowing) {
+                Text(
+                    text = "\"Crafting modern mobile experiences.\"",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp),
+                    lineHeight = 20.sp
+                )
+            }
 
             Spacer(modifier = Modifier.height(20.dp))
 
