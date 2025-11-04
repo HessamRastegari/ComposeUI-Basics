@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -39,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -79,6 +81,7 @@ fun ProfileScreen() {
         modifier = Modifier
             .padding(24.dp)
             .fillMaxWidth()
+            .wrapContentHeight()
             .animateContentSize(), // smooth resizing
         shape = MaterialTheme.shapes.large,
         elevation = CardDefaults.cardElevation(defaultElevation = cardElevation)
@@ -101,7 +104,7 @@ fun ProfileScreen() {
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "John Doe",
+                text = "Hessam Rastegari",
                 style = MaterialTheme.typography.titleLarge
             )
 
@@ -117,8 +120,10 @@ fun ProfileScreen() {
                     text = "\"Crafting modern mobile experiences.\"",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp),
-                    lineHeight = 20.sp
+                    modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp)
+                        .fillMaxWidth(),
+                    lineHeight = 20.sp,
+                    textAlign = TextAlign.Center
                 )
             }
 
@@ -172,10 +177,43 @@ fun FollowButton(
 
 
 
-@Preview(showBackground = true)
+// --- PREVIEWS ---------------------------------------------------------
+
+@Preview(name = "Light Theme", showBackground = true)
 @Composable
-fun ProfileScreenPreview() {
-    ComposeUIBasicsTheme {
+fun ProfilePreviewLight() {
+    ComposeUIBasicsTheme(darkTheme = false) {
         ProfileScreen()
     }
 }
+
+@Preview(name = "Dark Theme", showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun ProfilePreviewDark() {
+    ComposeUIBasicsTheme(darkTheme = true) {
+        ProfileScreen()
+    }
+}
+
+@Preview(name = "Following State", showBackground = true)
+@Composable
+fun ProfilePreviewFollowing() {
+    ComposeUIBasicsTheme {
+        Card(
+            modifier = Modifier
+                .padding(24.dp)
+                .fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 16.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text("Following ✓", style = MaterialTheme.typography.titleLarge)
+            }
+        }
+    }
+}
+
